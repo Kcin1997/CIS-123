@@ -1,0 +1,154 @@
+Microsoft (R) Macro Assembler Version 14.16.27027.1	    03/04/20 21:58:47
+..\TeamA_Lab4.asm					     Page 1 - 1
+
+
+				; Author: Jayeola, Lopez
+				; Class: CIS123 Assembly Language
+				; File Name: TeamA_Lab4.asm
+				; Creation Date: 2020-03-04
+				; Program Description: Describe with a short paragraph what your
+				;                      program does and its purpose. Explain in general
+				;                      terms the expected inputs and output result. 
+
+				.386								;32 bit program.
+				.model flat,stdcall					;Memory model.
+				.stack 4096							;Stack allocation 4,096 bytes.
+				ExitProcess proto,dwExitCode:dword	;Exit procedure prototype.
+
+ 00000000			.data
+					; Excercise 1
+ 00000000 64				bVal  BYTE   100
+ 00000001 00				bVal2 BYTE   ?
+ 00000002 0002				wVal  WORD   2
+ 00000004 00000005			dVal  DWORD  5
+
+ 00000008 00000001			array2 DWORD 1,2,3		; Excercise 2
+	   00000002
+	   00000003
+
+ 00000014 80 66 A5			array3 BYTE 80h,66h,0A5h; Excercise 3
+
+ 00000017 FF 00				array4 BYTE 0FFh, 0		; Excercise 4
+
+					; Excercise 5
+ 00000019 00000000			Xval SDWORD ?
+ 0000001D 00000000			Yval SDWORD ?
+ 00000021 00000000			Zval SDWORD ?
+ 00000025 00000000			Rval SdWORD 0
+
+ 00000000			.code
+ 00000000			main PROC
+					;mov ds,45				; No immediate to segment moves
+					;mov esi,wVal			; Mismatched sizes
+					;mov eip,dVal			; MOV can not assign to EIP
+					;mov 25,bVal			; You cant put an immedate opperand as the destination
+					;mov bVal2,bVal			; You can't move a varible directly to another varible
+
+					; Excercise 2
+					
+ 00000000  A1 00000008 R		mov EAX, [array2]		; EAX = arrayD[0]
+ 00000005  87 05 0000000C R		xchg EAX, [array2 + 4]	; swap EAX and arrayD[1]
+ 0000000B  87 05 00000010 R		xchg EAX, [array2 + 8]	; swap EAX and arrayD[2]
+ 00000011  A3 00000008 R		mov [array2], EAX		; array[0] = EAX
+
+					; Excercise 3
+
+ 00000016  A0 00000014 R		mov al,[array3]
+ 0000001B  02 05 00000015 R		add al,[array3 + 1]
+ 00000021  02 05 00000019 R		add al,[array4 + 2]		; AL = 85h
+
+					;mov ax,[array3]		; Code does not work as AX is a WORD not a BYTE
+					;add ax,[array3 + 1]
+					;add ax,[array3 + 2]
+
+					; Excercise 4
+
+ 00000027  A0 00000017 R		mov al,[array4]			; AL = FFh
+ 0000002C  8A 25 00000018 R		mov ah,[array4 + 1]		; AH = 00h
+ 00000032  FE CC			dec ah					; AH = FFh
+ 00000034  FE C0			inc al					; AL = 00h
+ 00000036  66| 48			dec ax					; AX = FEFFh
+
+					; Excercise 5
+
+ 00000038  A1 00000019 R		mov EAX, Xval			; EAX = Xval
+ 0000003D  8B 1D 0000001D R		mov EBX, Yval			; EBX = Yval
+ 00000043  8B 0D 00000021 R		mov ECX, Zval			; ECX = Zval
+
+ 00000049  F7 DB			neg EBX					; 2's complement EBX
+ 0000004B  03 D9			add EBX, ECX			; EBX += ECX
+ 0000004D  2B C3			sub EAX, EBX			; EAX -= EBX
+ 0000004F  A3 00000025 R		mov Rval, EAX			; Rval = EAX
+
+					; Excercise 6
+
+ 00000054  66| B8 00FF			mov ax,00FFh
+ 00000058  66| 83 C0 01			add ax,1				; AX= 0100h SF=  ZF=  CF=
+ 0000005C  66| 83 E8 01			sub ax,1				; AX= 00FFh SF=  ZF=  CF=
+ 00000060  04 01			add al,1				; AL=       SF=  ZF=  CF=
+ 00000062  B7 6C			mov bh,6Ch
+ 00000064  80 C7 95			add bh,95h				; BH=       SF=  ZF=  CF=
+
+ 00000067  B0 02			mov al,2
+ 00000069  2C 03			sub al,3				; AL=       SF=  ZF=  CF=
+
+
+					INVOKE ExitProcess,0			;Exit program
+ 0000006B  6A 00	   *	    push   +000000000h
+ 0000006D  E8 00000000 E   *	    call   ExitProcess
+ 00000072			main ENDP
+
+					;Procedures go here.
+
+				END main
+Microsoft (R) Macro Assembler Version 14.16.27027.1	    03/04/20 21:58:47
+..\TeamA_Lab4.asm					     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000029 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000072 DWord	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000072 Public STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+Rval . . . . . . . . . . . . . .	DWord	 00000025 _DATA	
+Xval . . . . . . . . . . . . . .	DWord	 00000019 _DATA	
+Yval . . . . . . . . . . . . . .	DWord	 0000001D _DATA	
+Zval . . . . . . . . . . . . . .	DWord	 00000021 _DATA	
+array2 . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+array3 . . . . . . . . . . . . .	Byte	 00000014 _DATA	
+array4 . . . . . . . . . . . . .	Byte	 00000017 _DATA	
+bVal2  . . . . . . . . . . . . .	Byte	 00000001 _DATA	
+bVal . . . . . . . . . . . . . .	Byte	 00000000 _DATA	
+dVal . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+wVal . . . . . . . . . . . . . .	Word	 00000002 _DATA	
+
+	   0 Warnings
+	   0 Errors
